@@ -1,0 +1,267 @@
+{% load staticfiles %}
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+    <script src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <script>
+        var today = new Date();
+        var csrf = '{{csrf_token}}';
+    </script>
+
+</head>
+
+<body>
+    <div class="form-div" id="form-add-event">
+        <form onsubmit="return newevent(event)" name="add-event">
+            {% csrf_token %}
+        <input type="hidden" name="type" id="id_type" value="add">
+        <input type="hidden" name="eid"  id="id_eid" value=""> 
+            <ul>
+                <li class="form-li">
+                    <span class="form-top">Thursday, 13 October 2016</span>
+                </li>
+                <li class="form-li">
+                    <span class="input-field">
+                        <input id="id_name" maxlength="50" name="name" placeholder="Event Name" type="text" style='text-transform:capitalize' required>
+                    </span>
+                </li>
+                <li class="form-li">
+                    <span class="input-field">
+                        <input id="id_location" maxlength="50" name="location" placeholder="Location" type="text"  style='text-transform:capitalize' required>
+                    </span>
+                </li>
+                <li class="form-li">
+                    <span class="input-name">Starts</span>
+                    <span class="input-field datetime-field">
+                        <input id="add-event-sdate" name="start_date" type="date" ><input id="add-event-stime" name="start_time" type="time" required>
+                    </span>
+                </li>
+                <li class="form-li">
+                    <span class="input-name">Ends</span>
+                    <span class="input-field datetime-field">
+                        <input id="add-event-edate" name="end_date" type="date" ><input id="add-event-etime" name="end_time" type="time" required>
+                    </span>
+                </li>
+                <li class="form-li">
+                    <input id="id_allday" type="checkbox" name="allday">
+                    <label for="id_allday" class="input-name"> All Day</label>
+                </li>
+                <li class="form-li">
+                    <textarea id="id_desc" name="description" placeholder="Description"></textarea>
+                </li>
+
+                <div class="btn-div">
+                    <input class="btn btn-cancel" type="button" value="Cancel">
+                    <input class="btn btn-right" type="submit" value="Save">
+                </div>
+            </ul>
+        </form>
+    </div>
+    <div class="form-div" id="form-show-event">
+        <form>
+            <ul>
+                <li class="form-li">
+                    <span class="form-top" id="form-show-name">Event Name</span>
+                </li>
+                <li class="form-li">
+                    <p class="detail-label">Where</p>
+                    <p id="form-show-location" class="detail-info"></p>
+                </li>
+                <li class="form-li">
+                    <p class="detail-label">When</p>
+                    <p id="form-show-date" class="detail-info"></p>
+                </li>
+                <li class="form-li">
+                    <p class="detail-label">Description</p>
+                    <p id="form-show-desc" class="detail-info"></p>
+                </li>
+                <div class="btn-div">
+                    <input class="btn" id="btn-edit" type="button" value="Edit">
+                    <input class="btn btn-right" id="btn-delete" type="button" value="Delete">
+                </div>
+            </ul>
+        </form>
+    </div>
+
+    <div id="container">
+        <div id="side-bar">
+            <div id="top-side"> <span id="menu-bars"><i class="fa fa-bars" ></i></span></div>
+            <div id="thumb">
+              <div style="padding-left:10px">
+                <span class="month"><script> document.write(today.toLocaleDateString("en-us",{month:"long"})) </script></span>
+                <span class="year"><script> document.write(today.getFullYear()) </script></span>
+              </div>
+                <table id="cal-th-grid">
+                    <tr class="week-days-th">
+                        <th>Su</th>
+                        <th>Mo</th>
+                        <th>Tu</th>
+                        <th class="selected">We</th>
+                        <th>Th</th>
+                        <th>Fr</th>
+                        <th>Sa</th>
+                    </tr>
+                    <tr class="week-row-th">
+                        <td class="day-cel-th not-present"></td>
+                        <td class="day-cell-th not-present"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                    </tr>
+                    <tr class="week-row-th">
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                    </tr>
+                    <tr class="week-row-th">
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                    </tr>
+                    <tr class="week-row-th">
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                    </tr>
+                    <tr class="week-row-th">
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                        <td class="day-cell-th"></td>
+                    </tr>
+                </table>
+
+            </div>          
+
+            <div id="time-now">
+                <span class="now" id="hr">05</span>:<span class="now" id="min">00</span>
+                <em id="ampm">pm</em>
+
+            </div>
+            <div id="upcoming-events"></div>
+            <div class="weather"><span>Weather</span>
+                <div id="weather-details">
+                    
+                    <div id="w-icon">
+                        <div id="ico"></div>
+                        <div id="desc"></div>
+                    </div>
+                    <div id="max-temp"></div>
+                    <div id="min-temp"></div>
+                </div>
+            </div>
+        </div>
+        <div id="content">
+            <div id="top-bar">
+                  
+            <span id="curr-month">
+                    <span id="month-up">
+                        <i class="fa fa-chevron-up"></i>
+                    </span>
+                <span id="month-dn">
+                        <i class="fa fa-chevron-down"></i>
+                    </span>
+                <span class="month">{{ curr_month }}</span>
+                <span class="year">{{ curr_year }}</span>
+                </span>
+                <span id="icon">
+                    <span onclick="handleAuthClick(event)" id="icon-sync">
+                        <i class="fa fa-refresh"></i>
+                    </span>
+                    <i class="fa fa-gear"></i>
+                </span>
+            </div>
+            <div id="days-of-week">
+                <table id="calendar-grid">
+                    <tbody>
+                        <tr class="week-days">
+                            <th>Sunday</th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th class="selected">Wednesday</th>
+                            <th>Thurday</th>
+                            <th>Friday</th>
+                            <th>Saturday</th>
+                        </tr>
+                        <tr class="week-row">
+                            <td class="day-cell not-present"></td>
+                            <td class="day-cell not-present">knsvnvs</td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                        </tr>
+                        <tr class="week-row">
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                        </tr>
+                        <tr class="week-row">
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                        </tr>
+                        <tr class="week-row">
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                        </tr>
+                        <tr class="week-row">
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                            <td class="day-cell"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/sync.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+
+    <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

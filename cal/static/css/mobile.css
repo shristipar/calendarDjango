@@ -1,0 +1,16 @@
+@media only screen and (max-device-width: 480px) {
+    
+    
+    #side-bar{
+        width: 0%;
+        overflow: hidden;
+    }
+    
+    
+    #content{
+        font-size: 18pt ;
+        width: 100%;
+        
+    }
+    
+}
